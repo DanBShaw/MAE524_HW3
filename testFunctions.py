@@ -80,7 +80,15 @@ class TestFunctions(unittest.TestCase):
         #
         # But I though this would be more legible.
 
-if __name__ == '__main__':
+    def test_Derivative(self):
+        # Define a polynomial p(x) = 3x^3 + x^2 + 5x + 4
+        P0 = F.Polynomial([4, 5, 1])
+        P1 = F.differentiate(P0)
+
+        #manual differentiate: d/dx(P0) = 9x^2 + 2x + 5
+        self.assertEqual(P0,P1)
+
+If __name__ == '__main__':
     unittest.main()
 
 

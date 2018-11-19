@@ -128,6 +128,7 @@ class Polynomial(object):
         for c in reversed(self._coeffs):
             ans = x*ans + c
         return ans
+        
 
     # Instances of classes that have a defined __call__ method are
     # themselves callable, as if they were functions
