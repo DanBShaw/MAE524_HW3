@@ -128,10 +128,28 @@ class Polynomial(object):
         for c in reversed(self._coeffs):
             ans = x*ans + c
         return ans
+
+    def differentiate(self):
+        oldCoeffs = self._coeffs
+        P_new = [];
+        for i in range(len(oldCoeffs)):
+            P_new.append(oldCoeffs[i])
         
 
+        return Polynomial(P_new)
+            
     # Instances of classes that have a defined __call__ method are
     # themselves callable, as if they were functions
     def __call__(self, x):
         return self._f(x)
+
+    # Re-write == function for comparison of Polynomials
+    def __eq__(self,other):
+        # Read up on the join() method of string objects. In this
+        # case, we're calling the join() method of the string ','
+        # consisting of a single comma.
+        coeffstr = ",".join([str(x) for x in self._coeffs])
+        # Read up on Python string formatting. I'm avoiding the newer
+        # "format-strings" introduced in Python 3.7
+        return "Polynomial([{}])".format(coeffstr)
 
