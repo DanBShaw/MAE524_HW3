@@ -82,12 +82,35 @@ class TestFunctions(unittest.TestCase):
 
     def test_Derivative(self):
         # Define a polynomial p(x) = 3x^3 + x^2 + 5x + 4
-        P0 = F.Polynomial([3, 4, 5, 1])
-        P1 = F.Polynomial.differentiate(P0)
+        P0 = F.Polynomial([4, 5, 1, 3])
+        P1 = P0.differentiate()
 
         #manual differentiate: d/dx(P0) = 9x^2 + 2x + 5
-        self.assertEqual(P0,P1)
+        PTest = F.Polynomial([5, 2, 9])
+        
+        self.assertEqual(PTest,P1)
 
+    def test_DerivativeWithFloatings(self):
+        # P0 = 3.1 + 1.2*x
+        P0 = F.Polynomial([3.98, 1.20])
+        PTest = F.Polynomial([1.2])
+
+        self.assertEqual(P0.differentiate(),PTest)
+
+
+    def test_DerivativeWithStrings(self):
+        # P0 = 3.1 + 1.2*x
+        P0 = F.Polynomial(['1.37', '5.43'])
+        x = np.matrix("1.37 5.43")
+        P1 = F.Polynomial(x)
+        PTest = F.Polynomial([5.43])
+
+        self.assertEqual(P0.differentiate(),PTest)
+        self.assertEqual(P1.differentiate(),PTest)
+
+
+
+        
 if __name__ == '__main__':
     unittest.main()
 

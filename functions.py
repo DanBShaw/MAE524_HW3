@@ -108,7 +108,25 @@ class Polynomial(object):
     """
     def __init__(self, coeffs):
         """In coeffs, index = degree of that coefficient"""
-        self._coeffs = coeffs
+        # check if input is one string that needs to be broken up into floats
+        if type(coeffs) == 'str':
+            coeffs2 = coeffs
+            coeffs = []
+            for c in coeffs2:
+                coeffs.append(float(c))
+
+        #check if input is a numpy matrix
+        if (type(coeffs).__module__ == 'numpy.matrixlib.defmatrix'):
+            coeffs = list(coeffs.flat)
+            
+        
+        self._coeffs = []
+        for c in coeffs:
+            if type(c) == 'str':
+                (self._coeffs).append(float(c))
+            else:
+                (self._coeffs).append(c)
+        
 
     # The __repr__ method tells objects what to do when fed into the
     # print() function
@@ -132,10 +150,8 @@ class Polynomial(object):
     def differentiate(self):
         oldCoeffs = self._coeffs
         P_new = [];
-        for i in range(len(oldCoeffs)):
-            P_new.append(oldCoeffs[i])
-        
-
+        for i in range(len(oldCoeffs)-1):
+            P_new.append(oldCoeffs[i+1]*(i+1))
         return Polynomial(P_new)
             
     # Instances of classes that have a defined __call__ method are
@@ -148,8 +164,7 @@ class Polynomial(object):
         # Read up on the join() method of string objects. In this
         # case, we're calling the join() method of the string ','
         # consisting of a single comma.
-        coeffstr = ",".join([str(x) for x in self._coeffs])
-        # Read up on Python string formatting. I'm avoiding the newer
-        # "format-strings" introduced in Python 3.7
-        return "Polynomial([{}])".format(coeffstr)
+        coeffstr1 = ",".join([str(float(x)) for x in self._coeffs])
+        coeffstr2 = ",".join([str(float(x)) for x in other._coeffs])
+        return coeffstr1 == coeffstr2
 
