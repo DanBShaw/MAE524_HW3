@@ -58,6 +58,37 @@ class TestNewton(unittest.TestCase):
 
         self.assertTrue("Was not able to find a non-zero slope/jacobian near the provided x0" in str(context.exception))
 
+    def test_commonf_1(self):
+        # Tests f = (x+1)(x-1)
+
+        # Create an f with zero slope:
+        f = lambda x : (x+1.)*(x-1.)
+
+        # Create Solver
+        solver = newton.Newton(f, tol=1.e-15, maxiter=50)
+
+        x_neg1 = solver.solve(-0.5)
+        x_1 = solver.solve(0.5)
+
+        self.assertAlmostEqual(x_neg1, -1.0)
+        self.assertAlmostEqual(x_1, 1.0)
+
+
+    def test_commonf_2(self):
+        # Tests f = (x+1)*(x-1)*100
+        # f has a very steep slope around the origin
+
+        # Create an f with zero slope:
+        f = lambda x : 100*(x+1.)*(x-1.)
+
+        # Create Solver
+        solver = newton.Newton(f, tol=1.e-15, maxiter=50)
+
+        x_neg1 = solver.solve(-2)
+        x_1 = solver.solve(0.6)
+
+        self.assertAlmostEqual(x_neg1, -1.0)
+        self.assertAlmostEqual(x_1, 1.0)
         
 if __name__ == "__main__":
     unittest.main()
