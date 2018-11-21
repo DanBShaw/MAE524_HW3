@@ -13,7 +13,7 @@ class Newton(object):
 
     """
     
-    def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6):
+    def __init__(self, f, tol=1.e-6, maxiter=20, dx=1.e-6, **kwargs):
         """Parameters:
         
         f: the function whose roots we seek. Can be scalar- or
@@ -26,6 +26,10 @@ class Newton(object):
         dx: step size for computing approximate Jacobian
 
         """
+        for key,value in kwargs.items():
+            if key == 'max_radius':
+                self._max_radius = value
+
         self._f = f
         self._tol = tol
         self._maxiter = maxiter
@@ -50,13 +54,22 @@ class Newton(object):
                 conv = 1
                 return x
             x = self.step(x, fx)
+            # check to see if |xk - x0| > max_radius & raise exception if so
+            if (hasattr(self, '_max_radius')):
+                if (np.linalg.norm(x - x0) > self._max_radius):
+                    mesg1 = "Calculated root exceeded maximum radius "
+                    mesg2 = "from initial input"
+                    mesg = mesg1 + mesg2
+                    raise RuntimeError(mesg)
+                else:
+                    return x
 
         if conv == 0:
             raise RuntimeError("Solution did not converge within maximum number of iterations")
         else:
             return x
 
-    def step(self, x, dx, fx=None):
+    def step(self, x, fx=None):
         """Take a single step of a Newton method, starting from x. If the
         argument fx is provided, assumes fx = f(x).
 
@@ -75,9 +88,6 @@ class Newton(object):
                 Df_x = F.approximateJacobian(self._f, x, self._dx)
                 counter = counter - 1
         
-
-                
-        
         # linalg.solve(A,B) returns the matrix solution to AX = B, so
         # it gives (A^{-1}) B. np.matrix() promotes scalars to 1x1
         # matrices.
@@ -90,5 +100,7 @@ class Newton(object):
         # that element as a scalar.
         if np.isscalar(x):
             h = np.asscalar(h)
-
-        return x - np.asarray(h)
+        else:
+            h = np.asarray(h)
+        
+        return x - h

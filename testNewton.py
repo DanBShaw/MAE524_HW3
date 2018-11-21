@@ -4,6 +4,7 @@ import unittest
 import numpy as np
 import numpy.testing as npt
 
+import functions as F
 import newton
 
 class TestNewton(unittest.TestCase):
@@ -92,7 +93,7 @@ class TestNewton(unittest.TestCase):
         self.assertAlmostEqual(x_1, 1.0)
 
     def test_common2d_f(self):
-        # Tests f = (x+1)*(x-1)*100
+        # Tests f(x,y) = [(1-x),-y]
         # f has a very steep slope around the origin
 
         # Create an f with zero slope:
@@ -106,7 +107,53 @@ class TestNewton(unittest.TestCase):
         x_Sol = np.array([[1],[0.]])
 
         npt.assert_array_almost_equal(x_CalcSol, x_Sol)
-        
+
+    def test_rootBound(self):
+        # Tests f = (x+5)*(x-5)
+        # f has a very steep slope around the origin
+
+        # Create an f with zero slope:
+        f = lambda x : (x+5.)*(x-5.)
+
+        # Create Solver
+        solver = newton.Newton(f, tol=1.e-15, maxiter=50, max_radius=1)
+        with self.assertRaises(RuntimeError) as context:
+            solver.solve(1)
+
+        self.assertTrue("Calculated root exceeded maximum radius from initial input" in str(context.exception))
+
+class TestNewtonWithPolynomials(unittest.TestCase):
+    def test_LinearPoly(self):
+        # P(x) = -1+x. Has root at x=1
+        P = F.Polynomial([-1, 1])
+
+        # Create Solver
+        solver = newton.Newton(P, tol=1.e-15, maxiter=50)
+
+        # Calculate solution
+        x_Sol = solver.solve(0)
+
+        self.assertAlmostEqual(x_Sol, 1.)
+
+    def test_LinearPolyWithNoRoot(self):
+        # P(x) = 1+x^2. Has no root
+        P = F.Polynomial([1,0,1])
+
+        # Create Solver
+        solver = newton.Newton(P, tol=1.e-15, maxiter=50)
+
+        with self.assertRaises(RuntimeError) as context:
+            solver.solve(0)
+
+        self.assertTrue("Solution did not converge within maximum number of iterations" in str(context.exception))
+
+
+
+
+
+
+
+
         
 if __name__ == "__main__":
     unittest.main()
