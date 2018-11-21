@@ -28,6 +28,18 @@ class TestNewton(unittest.TestCase):
         # assertEqual rather than assertAlmostEqual
         self.assertEqual(x, -2.0)
 
+    def testConvergenceException(self):
+        # Test whether or not an exception is raised because no solution
+        # was obtained after the maximum number of iterations
+        
+        # Create an f with no root:
+        f = lambda x : x**2 + 1.
+
+        # Create Solver
+        solver = newton.Newton(f, tol=1.e-15, maxiter=2)
+        x = solver.solve(2.0)
+        
+        
 if __name__ == "__main__":
     unittest.main()
 
