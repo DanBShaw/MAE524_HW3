@@ -57,6 +57,7 @@ class TestNewton(unittest.TestCase):
             solver.solve(2.0)
 
         self.assertTrue("Was not able to find a non-zero slope/jacobian near the provided x0" in str(context.exception))
+
         
 if __name__ == "__main__":
     unittest.main()

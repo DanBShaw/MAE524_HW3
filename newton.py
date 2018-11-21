@@ -76,6 +76,7 @@ class Newton(object):
                 counter = counter - 1
         
 
+                
         
         # linalg.solve(A,B) returns the matrix solution to AX = B, so
         # it gives (A^{-1}) B. np.matrix() promotes scalars to 1x1
