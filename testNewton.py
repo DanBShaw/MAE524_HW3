@@ -64,7 +64,8 @@ class TestNewton(unittest.TestCase):
         # Tests f = (x+1)(x-1)
 
         # Create an f with zero slope:
-        f = lambda x : (x+1.)*(x-1.)
+        # Also, try the function f with integers instead of floats
+        f = lambda x : (x+1)*(x-1)
 
         # Create Solver
         solver = newton.Newton(f, tol=1.e-15, maxiter=50)
@@ -126,7 +127,6 @@ class TestNewtonWithPolynomials(unittest.TestCase):
     def test_LinearPoly(self):
         # P(x) = -1+x. Has root at x=1
         P = F.Polynomial([-1, 1])
-        print(P.__class__.__name__)
 
         # Create Solver
         solver = newton.Newton(P, tol=1.e-15, maxiter=50)
