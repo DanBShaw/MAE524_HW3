@@ -42,16 +42,21 @@ class Newton(object):
         # the functions/methods invoked inside solve() return "the
         # right thing" when x0 is scalar.
         x = x0
+        conv = 0
         for i in range(self._maxiter):
             fx = self._f(x)
             # linalg.norm works fine on scalar inputs
             if np.linalg.norm(fx) < self._tol:
+                conv = 1
                 return x
             x = self.step(x, fx)
 
-        return x
+        if conv == 0:
+            raise RuntimeError("Solution did not converge within maximum number of iterations")
+        else:
+            return x
 
-    def step(self, x, fx=None):
+    def step(self, x, dx, fx=None):
         """Take a single step of a Newton method, starting from x. If the
         argument fx is provided, assumes fx = f(x).
 
@@ -59,7 +64,19 @@ class Newton(object):
         if fx is None:
             fx = self._f(x)
 
+        # Find the derivative of f at x:
         Df_x = F.approximateJacobian(self._f, x, self._dx)
+        if np.all(Df_x==0):
+            counter = self._maxiter
+            while np.all(Df_x==0):
+                if counter == 0:
+                    raise RuntimeError("Was not able to find a non-zero slope/jacobian near the provided x0")
+                x = x + self._dx
+                Df_x = F.approximateJacobian(self._f, x, self._dx)
+                counter = counter - 1
+        
+
+        
         # linalg.solve(A,B) returns the matrix solution to AX = B, so
         # it gives (A^{-1}) B. np.matrix() promotes scalars to 1x1
         # matrices.
