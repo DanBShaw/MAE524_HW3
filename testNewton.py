@@ -126,6 +126,7 @@ class TestNewtonWithPolynomials(unittest.TestCase):
     def test_LinearPoly(self):
         # P(x) = -1+x. Has root at x=1
         P = F.Polynomial([-1, 1])
+        print(P.__class__.__name__)
 
         # Create Solver
         solver = newton.Newton(P, tol=1.e-15, maxiter=50)

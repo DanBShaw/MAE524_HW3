@@ -33,6 +33,9 @@ class Newton(object):
             if key == 'Df':
                 self._Df = value
 
+        if f.__class__.__name__ == 'Polynomial':
+            self._Df = f.differentiate()
+
         self._f = f
         self._tol = tol
         self._maxiter = maxiter
