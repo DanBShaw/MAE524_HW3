@@ -62,6 +62,46 @@ class TestFunctions(unittest.TestCase):
         # array-specific assert statements found in numpy.testing
         npt.assert_array_almost_equal(Df_x, A)
 
+
+    def test_ApproxJacobian3(self):
+        # Try doing non-float inputs of x and A and np.array input of x
+        A = np.matrix([[1,2],[3,4]])
+        
+
+        def f(x):
+            # The * operator for numpy matrices is overloaded to mean
+            # matrix-multiplication, rather than elementwise
+            # multiplication as it does for numpy arrays
+            return A * x
+
+        # The vector-valued function f defined above is the following:
+        # if we let u = f(x), then
+        #
+        # u1 = x1 + 2 x2
+        # u2 = 3 x1 + 4 x2
+        #
+        # The Jacobian of this function is constant and exactly equal
+        # to the matrix A. approximateJacobian should thus return
+        # something pretty close to A.
+
+        x0 = np.array([[1],[3]])
+        dx = 1.e-6
+        Df_x = F.approximateJacobian(f, x0, dx)
+
+        # Make sure approximateJA
+        self.assertEqual(Df_x.shape, (2,2))
+        # numpy arrays and matrices vectorize comparisons. So if a & b
+        # are arrays, the expression a==b will itself be an array of
+        # booleans. But an array of booleans does not itself evaluate
+        # to a clean boolean (this is an exception to the general
+        # Python rule that "every object can be interpreted as a
+        # boolean"), so normal assert statements will break. We need
+        # array-specific assert statements found in numpy.testing
+        npt.assert_array_almost_equal(Df_x, A)
+        
+
+        
+
     def test_Polynomial(self):
         # p(x) = x^2 + 5x + 4
         p = F.Polynomial([4, 5, 1])

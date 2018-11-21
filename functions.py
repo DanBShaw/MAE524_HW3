@@ -29,6 +29,12 @@ def approximateJacobian(f, x, dx=1e-6):
     # numpy. You may want to delete all these comments from the file
     # once you get comfortable with what they say.
 
+    #Change x to be a float:
+    if (type(x).__module__ == 'numpy') or (type(x).__module__ == 'numpy.matrixlib.defmatrix'):
+        x = x.astype(float)
+    else:
+        x = float(x)
+    
     # Evaluate f(x) up front, since we'll need this value in multiple
     # places
     fx = f(x)
