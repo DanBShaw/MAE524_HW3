@@ -2,6 +2,7 @@
 
 import unittest
 import numpy as np
+import numpy.testing as npt
 
 import newton
 
@@ -89,6 +90,23 @@ class TestNewton(unittest.TestCase):
 
         self.assertAlmostEqual(x_neg1, -1.0)
         self.assertAlmostEqual(x_1, 1.0)
+
+    def test_common2d_f(self):
+        # Tests f = (x+1)*(x-1)*100
+        # f has a very steep slope around the origin
+
+        # Create an f with zero slope:
+        f = lambda x : np.array([[1-x[0,0]],[-x[1,0]]])
+
+        # Create Solver
+        solver = newton.Newton(f, tol=1.e-15, maxiter=50)
+
+        x0 = np.array([[1],[1]])
+        x_CalcSol = solver.solve(x0)
+        x_Sol = np.array([[1],[0.]])
+
+        npt.assert_array_almost_equal(x_CalcSol, x_Sol)
+        
         
 if __name__ == "__main__":
     unittest.main()
