@@ -29,6 +29,9 @@ class Newton(object):
         for key,value in kwargs.items():
             if key == 'max_radius':
                 self._max_radius = value
+                
+            if key == 'Df':
+                self._Df = value
 
         self._f = f
         self._tol = tol
@@ -78,7 +81,13 @@ class Newton(object):
             fx = self._f(x)
 
         # Find the derivative of f at x:
-        Df_x = F.approximateJacobian(self._f, x, self._dx)
+        # Check to see if analytical jacobian has been provided:
+        if (hasattr(self, '_Df')): #Analytical method provided
+            Df_x = self._Df(x)
+        else: #Use the approximate Method
+            Df_x = F.approximateJacobian(self._f, x, self._dx)
+
+        
         if np.all(Df_x==0):
             counter = self._maxiter
             while np.all(Df_x==0):

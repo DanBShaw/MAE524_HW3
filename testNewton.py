@@ -148,8 +148,35 @@ class TestNewtonWithPolynomials(unittest.TestCase):
         self.assertTrue("Solution did not converge within maximum number of iterations" in str(context.exception))
 
 
+class TestAnalyticalJacobianSolving(unittest.TestCase):
+    def test_AnalyticalJacobian_1D(self):
+        # P(x) = (x-1)(x+1) = -1 + x^2. Has root at x=1 & x=-1
+        P = F.Polynomial([-1, 0, 1])
+        # P'(x) = 2x
+        P_Df = F.Polynomial([0, 2])
 
+        # Create Solver
+        solver = newton.Newton(P, tol=1.e-15, maxiter=50, Df=P_Df)
 
+        # Calculate solution
+        x_Sol = solver.solve(0.5)
+
+        self.assertAlmostEqual(x_Sol, 1.)
+
+    def test_AnalyticalJacobian_2D(self):
+        # Tests f(x,y) = [(1-x),-y]
+        f = lambda x : np.array([[1-x[0,0]],[-x[1,0]]])
+        # f'(x) = 2x
+        f_Df = lambda x : np.array([[-1,0],[0,-1]])
+        
+        # Create Solver
+        solver = newton.Newton(f, tol=1.e-15, maxiter=50, Df=f_Df)
+        
+        x0 = np.array([[1],[1]])
+        x_CalcSol = solver.solve(x0)
+        x_Sol = np.array([[1],[0.]])
+
+        npt.assert_array_almost_equal(x_CalcSol, x_Sol)
 
 
 
